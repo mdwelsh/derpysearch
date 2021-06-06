@@ -1,11 +1,15 @@
 from flask import Flask
 
+import gentext
+
 app = Flask(__name__)
 
 
 @app.route("/")
 def hello_world():
-    return "Hi I am a Derpy Search Engine"
+    retval = "Hi I am a Derpy Search Engine"
+    retval += "\n\n" + gentext.randomtext()
+    return retval
 
 
 # For local testing only.
