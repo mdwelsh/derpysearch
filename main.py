@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 
 import gentext
 
@@ -6,10 +6,9 @@ app = Flask(__name__)
 
 
 @app.route("/")
-def hello_world():
-    retval = "Hi I am a Derpy Search Engine"
-    retval += "\n\n" + gentext.randomtext()
-    return retval
+def home():
+    result = gentext.randomtext()
+    return render_template('home.html', result=result)
 
 
 # For local testing only.

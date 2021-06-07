@@ -1,10 +1,10 @@
 import main
 
 
-def test_index():
+def test_home():
     main.app.testing = True
     client = main.app.test_client()
 
     r = client.get("/")
     assert r.status_code == 200
-    assert "Hi I am a Derpy Search Engine" in r.data.decode("utf-8")
+    assert "Derpysearch" in r.data.decode("utf-8")

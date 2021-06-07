@@ -1,0 +1,76 @@
+.mainlogo {
+    text-align: center;
+    font-family: "Product Sans Regular";
+    font-weight: bold;
+    font-size: 70px;
+    letter-spacing: 0.03em;
+}
+
+.searchpanel {
+    margin-top: 200px;
+}
+
+.searchbox {
+    display: flex;
+    border: 1px solid #dfe1e5;
+    border-radius: 25px;
+    margin: auto;
+    margin-top: 30px;
+    width: auto;
+    max-width: 584px;
+    height: 44px;
+}
+
+.searchicon {
+    color: #9aa0a6;
+    fill: currentColor;
+    padding-top: 12px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 8px;
+    width: 20px;
+    height: 20px;
+}
+
+.searchinput {
+    border: 0px;
+    margin: 0;
+    padding: 0;
+    width: 90%;
+    height: 34px;
+    font-size: 16px;
+    margin-top: 6px;
+}
+
+.searchbuttons {
+    width: 70%;
+    text-align: center;
+    margin: auto;
+    margin-top: 20px;
+}
+
+.searchbutton {
+    transition-duration: 0.1s;
+    font-family: Roboto,arial,sans-serif;
+    font-size: 14px;
+    color: #3c4043;
+    background-color: rgb(248, 249, 250);
+    border: 1px solid #f8f9fa;
+    border-radius: 4px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.searchbutton:hover {
+    box-shadow: 0 1px 1px rgb(0 0 0 / 10%);
+    background-color: #f8f9fa;
+    border: 1px solid #dadce0;
+    color: #202124;
+}
+
