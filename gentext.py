@@ -1,5 +1,9 @@
 import random
+
+import googlesearch
 import nltk
+import requests
+from bs4 import BeautifulSoup
 
 print("Starting")
 
@@ -88,3 +92,31 @@ def randomtext():
     return gentext(corpus, "The", 100)
 
 
+def get_corpus(searchterm, max_results=100):
+    rawtext = ""
+
+    # Get search results.
+    count = 0
+    for url in googlesearch.search(searchterm):
+        # Fetch page.
+        print(f"Fetching {url}...")
+        r = requests.get(url, timeout=3)
+        if r.status_code != 200:
+            # Skip non-200 responses.
+            continue
+        # Get the HTML of the page.
+        html_doc = r.text
+        # Get the text from the page and add it to the corpus.
+        soup = BeautifulSoup(html_doc, 'html.parser')
+        pagetext = soup.get_text()
+        print(f"Got {len(pagetext.split())} words from {url}")
+        rawtext += pagetext
+        count += 1
+        if count >= max_results:
+            break
+
+    # Make a corpus from the words.
+    print(f"Making corpus from {len(rawtext.split())} words...")
+    corpus = makecorpus(rawtext.split())
+    print(f"Corpus has {len(corpus)} entries")
+    return corpus
