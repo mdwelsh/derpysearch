@@ -84,6 +84,7 @@ def updatelist(countlist, nextword):
 def randomtext():
     nltk.download("brown")
     from nltk.corpus import brown
+
     text = brown.words(categories="learned")[0:20000]
     print(f"Loaded text with {len(text)} words")
     print("Making corpus")
@@ -92,22 +93,25 @@ def randomtext():
     return gentext(corpus, "The", 100)
 
 
-def get_corpus(searchterm, max_results=100):
+def get_corpus(searchterm, max_results=10):
     rawtext = ""
 
     # Get search results.
     count = 0
     for url in googlesearch.search(searchterm):
         # Fetch page.
-        print(f"Fetching {url}...")
-        r = requests.get(url, timeout=3)
-        if r.status_code != 200:
-            # Skip non-200 responses.
+        print(f"[{count+1}/{max_results}] Fetching {url}...")
+        try:
+            r = requests.get(url, timeout=3)
+            if r.status_code != 200:
+                # Skip non-200 responses.
+                continue
+            # Get the HTML of the page.
+            html_doc = r.text
+        except:
             continue
-        # Get the HTML of the page.
-        html_doc = r.text
         # Get the text from the page and add it to the corpus.
-        soup = BeautifulSoup(html_doc, 'html.parser')
+        soup = BeautifulSoup(html_doc, "html.parser")
         pagetext = soup.get_text()
         print(f"Got {len(pagetext.split())} words from {url}")
         rawtext += pagetext
