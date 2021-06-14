@@ -1,0 +1,38 @@
+<!doctype html>
+
+<head>
+    <title>{{ title }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="/static/resultpage1.css" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arbutus+Slab&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="header">
+        <div class="logo">
+            {{ logo|safe }}
+        </div>
+        <div class="sitename">
+            {{ sitename }}
+        </div>
+    </div>
+    <div class="mainbody">
+        <div class="bodytitle">
+            {{ bodytitle }}
+        </div>
+        <div class="heroimage">
+            {{ heroimage|safe }}
+        </div>
+        <div class="heroimagecaption">
+            {{ heroimagecaption }}
+        </div>
+        <div class="bodytext">
+            {{ bodytext }}
+        </div>
+    </div>
+</body>
