@@ -3,3 +3,4 @@ nltk==3.6.2
 requests==2.25.1
 google==3.0.0
 beautifulsoup4==4.9.3
+lorem==0.1.1

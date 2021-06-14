@@ -4,6 +4,9 @@ from flask import Flask, render_template, request, send_from_directory
 import requests
 import googlesearch
 from bs4 import BeautifulSoup
+from lorem.text import TextLorem
+
+
 
 
 import gentext
@@ -28,13 +31,27 @@ def search():
     print(f"Search term is: {searchterm}")
     derpybutton = request.args.get("derpybutton", "") != ""
 
-    corpus = gentext.get_corpus(searchterm)
-    randtext = gentext.gentext(corpus, searchterm, 100)
-    if not randtext:
-        randtext = gentext.gentext(corpus, "The", 100)
+    #corpus = gentext.get_corpus(searchterm)
+    #randtext = gentext.gentext(corpus, searchterm, 100)
+    #if not randtext:
+    #    randtext = gentext.gentext(corpus, "The", 100)
 
     return render_template(
-        "search.html", result=f"Results for {searchterm}:<p><p>{randtext}"
+        "search.html", results=f"Results for {searchterm}:<p><p>boogers"
+    )
+
+
+@app.route("/result")
+def resultpage():
+    return render_template(
+        "resultpage1.html",
+        title="This is the title",
+        logo="<img src='/static/tselogo.png' width=100>",
+        sitename="This is the site name",
+        bodytitle="Body title",
+        heroimage="<img src='https://picsum.photos/800/400'>",
+        heroimagecaption="Hero image caption",
+        bodytext=TextLorem(trange=(30, 40)).text(),
     )
 
 
