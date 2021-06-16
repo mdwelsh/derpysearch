@@ -1,12 +1,13 @@
 import os
+import time
+from typing import Text
 
 from flask import Flask, render_template, request, send_from_directory
 import requests
 import googlesearch
 from bs4 import BeautifulSoup
+import lorem
 from lorem.text import TextLorem
-
-
 
 
 import gentext
@@ -31,14 +32,31 @@ def search():
     print(f"Search term is: {searchterm}")
     derpybutton = request.args.get("derpybutton", "") != ""
 
-    #corpus = gentext.get_corpus(searchterm)
-    #randtext = gentext.gentext(corpus, searchterm, 100)
-    #if not randtext:
+    # corpus = gentext.get_corpus(searchterm)
+    # randtext = gentext.gentext(corpus, searchterm, 100)
+    # if not randtext:
     #    randtext = gentext.gentext(corpus, "The", 100)
 
     return render_template(
         "search.html", results=f"Results for {searchterm}:<p><p>boogers"
     )
+
+
+@app.route("/searchresults", methods=["GET"])
+def searchresults():
+    searchterm = request.args.get("q", "")
+    print(f"Search results term is: {searchterm}")
+
+    results = []
+    for _ in range(10):
+        result = {
+            "url": "https://www.goobers.com",
+            "title": lorem.sentence(),
+            "snippet": lorem.paragraph(),
+        }
+        results.append(result)
+
+    return {"results": results}
 
 
 @app.route("/result")

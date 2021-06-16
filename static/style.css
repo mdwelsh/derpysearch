@@ -80,7 +80,7 @@
     flex-direction: row;
     margin-top: 30px;
     margin-left: 30px;
-    width: 50%;
+    width: 1200px;
 }
 
 .searchlogo {
@@ -101,25 +101,35 @@
     order: 2;
     flex: 4 4 auto;
     height: 40px;
-    width: 400px;
+    /* width: 719px; */
 }
 
 .searchsearchbox {
-    display: inline;
+    /* display: inline; */
+    display: inline-flex;
     margin-left: 40px;
     border: 1px solid #dfe1e5;
     border-radius: 25px;
-    width: auto;
-    width: 584px;
-    max-width: 584px;
-    height: 44px;
+    width: 719px;
+    /* max-width: 719px; */
+    height: 46px;
     box-shadow: 0 2px 5px 1px rgb(64 60 67 / 16%);
+}
+
+.searchsearchinput {
+    border: 0px;
+    margin: 0;
+    padding: 0;
+    width: 90%;
+    height: 34px;
+    font-size: 16px;
+    margin-top: 6px;
 }
 
 .searchresultspanel {
     font-family: Roboto, arial, sans-serif;
     font-size: 14px;
-    width: 100%;
+    width: 652px;
     margin-top: 50px;
     padding-left: 200px;
     padding-top: 20px;
@@ -137,23 +147,47 @@
     margin-top: 40px;
 }
 
+.resulturl {
+    color: rgb(32, 33, 36);
+    font-family: Roboto,arial,sans-serif;
+    text-align: left;
+    font-size: 14px;
+    line-height: 18.2px;
+    padding-top: 1px;
+    padding-bottom: 2px;
+}
+
+.resultlink {
+    color: #1a0dab;
+    text-decoration: none;
+    cursor: pointer;
+    font-family: Roboto, arial, sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    height: auto;
+    line-height: 26px;
+    padding-top: 5px;
+    margin-bottom: 3px;
+}
+
+.resultsnippet {
+    color: #4d5156; 
+    line-height: 1.58;
+    font-family: Roboto,arial,sans-serif;
+    text-align: left;
+    font-size: 14px;
+    margin-bottom: 26px;
+}
+
+/* Spinner */
 .searchresultspinner {
     width: 200px;
     height: 200px;
 }
 
-/* Spinner */
-
 .searchresultloader {
-  /* position: relative; */
-  margin: 0 auto;
-  width: 100px;
-/*  &:before {
-    content: '';
-    display: block;
-    padding-top: 100%;
-  }
-  */
+  width: 80px;
+  margin-left: 40px;
 }
 
 .circular {
