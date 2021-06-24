@@ -1,6 +1,7 @@
 import os
+import random
 import time
-from typing import Text
+from typing import Text, Tuple
 
 from flask import Flask, render_template, request, send_from_directory
 import requests
@@ -8,6 +9,10 @@ import googlesearch
 from bs4 import BeautifulSoup
 import lorem
 from lorem.text import TextLorem
+import nltk
+
+nltk.download("words")
+from nltk.corpus import words
 
 
 import gentext
@@ -42,17 +47,44 @@ def search():
     )
 
 
+randomword = words.words()
+
+
+def fakeurl(searchterm: str) -> Tuple[str, str]:
+    pathsep = " › "
+    prefix = random.choice(["", "www.", "m.", "en."])
+    tld = random.choice(
+        [".com", ".edu", ".net", ".io", ".co.uk", ".co.jp", ".gov", ".cc"]
+    )
+    domain = random.sample(randomword, 1)[0]
+    path = ""
+    for _ in range(random.randint(1, 3)):
+        pathentry = random.choice(["-", "_"]).join(random.sample(randomword, random.randint(1, 3)))
+        path += pathsep + pathentry
+    urlHost = "https://" + prefix + domain + tld
+    if len(path) >= 20:
+        path = path[0:20] + "..."
+    return urlHost, path
+
+
 @app.route("/searchresults", methods=["GET"])
 def searchresults():
     searchterm = request.args.get("q", "")
     print(f"Search results term is: {searchterm}")
 
     results = []
-    for _ in range(10):
+    for index in range(10):
+        urlHost, urlPath = fakeurl(searchterm)
+        snippet = lorem.paragraph()
+        if len(snippet) >= 200:
+            snippet = snippet[0:199] + "..."
+
         result = {
-            "url": "https://www.goobers.com",
+            "urlHost": urlHost,
+            "urlPath": urlPath,
+            "link": f"/result?index={index}",
             "title": lorem.sentence(),
-            "snippet": lorem.paragraph(),
+            "snippet": snippet,
         }
         results.append(result)
 

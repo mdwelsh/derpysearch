@@ -157,6 +157,10 @@
     padding-bottom: 2px;
 }
 
+.resulturlpath {
+  color: #5f6368;
+}
+
 .resultlink {
     color: #1a0dab;
     text-decoration: none;

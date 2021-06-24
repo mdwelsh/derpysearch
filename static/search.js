@@ -10,11 +10,15 @@ function addResult(result) {
     console.log(result);
     var resultEntry = $("<div>").addClass("resultentry");
     resultEntry.appendTo(".searchresultsresults");
-    var urlDiv = $("<div>").addClass("resulturl").text(result.url);
+    var urlDiv = $("<div>").addClass("resulturl");
+    var urlHost = $("<span>").addClass("resulturlhost").text(result.urlHost);
+    var urlPath = $("<span>").addClass("resulturlpath").text(result.urlPath);
+    urlDiv.append(urlHost);
+    urlDiv.append(urlPath);
     var titleDiv = $("<div>").addClass("resulttitle");
     var titleLink = $("<a>")
         .addClass("resultlink")
-        .attr("href", result.url)
+        .attr("href", result.link)
         .text(result.title);
     titleDiv.append(titleLink);
     var snippetDiv = $("<div>").addClass("resultsnippet").text(result.snippet);
