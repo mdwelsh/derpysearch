@@ -3,21 +3,29 @@ import random
 import time
 from typing import Text, Tuple
 
-from flask import Flask, render_template, request, send_from_directory
-import requests
 import googlesearch
-from bs4 import BeautifulSoup
 import lorem
-from lorem.text import TextLorem
 import nltk
-
-nltk.download("words")
+import requests
+from bs4 import BeautifulSoup
+from flask import Flask, render_template, request, send_from_directory
+from google.cloud import datastore
+from lorem.text import TextLorem
 from nltk.corpus import words
 
+import corpus
 
-import gentext
+# Get the words corpus from NLTK.
+nltk.download("words")
 
+# Create datastore client.
+dsclient = datastore.Client()
+
+# Create app.
 app = Flask(__name__)
+
+# Random word generator.
+randomword = words.words()
 
 
 @app.route("/favicon.png")
@@ -27,27 +35,28 @@ def favicon():
 
 @app.route("/")
 def home():
-    result = gentext.randomtext()
-    return render_template("home.html", result=result)
+    return render_template("home.html")
 
 
 @app.route("/search", methods=["GET"])
 def search():
     searchterm = request.args.get("q", "")
     print(f"Search term is: {searchterm}")
+
+    #thecorpus = corpus.Corpus(dsclient, searchterm)
+    #thecorpus.load()
+
+    #    logentry = datastore.Entity(dsclient.key("Log"))
+    #    logentry.update(
+    #        {
+    #            "route": "search",
+    #            "searchterm": searchterm,
+    #        }
+    #    )
+    #    dsclient.put(logentry)
+
     derpybutton = request.args.get("derpybutton", "") != ""
-
-    # corpus = gentext.get_corpus(searchterm)
-    # randtext = gentext.gentext(corpus, searchterm, 100)
-    # if not randtext:
-    #    randtext = gentext.gentext(corpus, "The", 100)
-
-    return render_template(
-        "search.html", results=f"Results for {searchterm}:<p><p>boogers"
-    )
-
-
-randomword = words.words()
+    return render_template("search.html")
 
 
 def fakeurl(searchterm: str) -> Tuple[str, str]:
@@ -59,7 +68,9 @@ def fakeurl(searchterm: str) -> Tuple[str, str]:
     domain = random.sample(randomword, 1)[0]
     path = ""
     for _ in range(random.randint(1, 3)):
-        pathentry = random.choice(["-", "_"]).join(random.sample(randomword, random.randint(1, 3)))
+        pathentry = random.choice(["-", "_"]).join(
+            random.sample(randomword, random.randint(1, 3))
+        )
         path += pathsep + pathentry
     urlHost = "https://" + prefix + domain + tld
     if len(path) >= 20:
@@ -72,10 +83,14 @@ def searchresults():
     searchterm = request.args.get("q", "")
     print(f"Search results term is: {searchterm}")
 
+    thecorpus = corpus.Corpus(dsclient, searchterm)
+    thecorpus.load()
+
     results = []
     for index in range(10):
         urlHost, urlPath = fakeurl(searchterm)
-        snippet = lorem.paragraph()
+        # snippet = lorem.paragraph()
+        snippet = thecorpus.gentext(searchterm, 20)
         if len(snippet) >= 200:
             snippet = snippet[0:199] + "..."
 
