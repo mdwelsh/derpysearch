@@ -8,7 +8,7 @@ import lorem
 import nltk
 import requests
 from bs4 import BeautifulSoup
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, make_response, render_template, request, send_from_directory
 from google.cloud import datastore
 from lorem.text import TextLorem
 from nltk.corpus import words
@@ -42,19 +42,6 @@ def home():
 def search():
     searchterm = request.args.get("q", "")
     print(f"Search term is: {searchterm}")
-
-    #thecorpus = corpus.Corpus(dsclient, searchterm)
-    #thecorpus.load()
-
-    #    logentry = datastore.Entity(dsclient.key("Log"))
-    #    logentry.update(
-    #        {
-    #            "route": "search",
-    #            "searchterm": searchterm,
-    #        }
-    #    )
-    #    dsclient.put(logentry)
-
     derpybutton = request.args.get("derpybutton", "") != ""
     return render_template("search.html")
 
@@ -83,7 +70,7 @@ def searchresults():
     searchterm = request.args.get("q", "")
     print(f"Search results term is: {searchterm}")
 
-    thecorpus = corpus.Corpus(dsclient, searchterm)
+    thecorpus = corpus.Corpus(dsclient, searchterm, seed=searchterm)
     thecorpus.load()
 
     results = []
@@ -97,8 +84,8 @@ def searchresults():
         result = {
             "urlHost": urlHost,
             "urlPath": urlPath,
-            "link": f"/result?index={index}",
-            "title": lorem.sentence(),
+            "link": f"/result?q={searchterm}&index={index}",
+            "title": thecorpus.gentext(searchterm, 8),
             "snippet": snippet,
         }
         results.append(result)
@@ -108,16 +95,39 @@ def searchresults():
 
 @app.route("/result")
 def resultpage():
+    searchterm = request.args.get("q", "")
+    result_index = request.args.get("index", "")
+    thecorpus = corpus.Corpus(dsclient, searchterm, seed=f"{searchterm}/{result_index}")
+    thecorpus.load()
+
+    title=thecorpus.gentext(searchterm, 5)
+    sitename=thecorpus.gentext(searchterm, 5)
+    bodytitle=thecorpus.gentext(searchterm, 5)
+    heroimagecaption=thecorpus.gentext(searchterm, 5)
+
     return render_template(
-        "resultpage1.html",
-        title="This is the title",
+        "resultpage1.html",  # TODO: Use result_index
+        searchterm=searchterm,
+        index=result_index,
+        title=title,
         logo="<img src='/static/tselogo.png' width=100>",
-        sitename="This is the site name",
-        bodytitle="Body title",
+        sitename=sitename,
+        bodytitle=bodytitle,
         heroimage="<img src='https://picsum.photos/800/400'>",
-        heroimagecaption="Hero image caption",
-        bodytext=TextLorem(trange=(30, 40)).text(),
+        heroimagecaption=heroimagecaption,
+        bodytext=thecorpus.gentext(searchterm, 200),
     )
+
+
+@app.route("/resultpage.css")
+def resultcss():
+    searchterm = request.args.get("q", "")
+    result_index = request.args.get("index", "")
+    # thecorpus = corpus.Corpus(dsclient, searchterm)
+    # thecorpus.load()
+    response = make_response(render_template("resultpage.css"))
+    response.headers["Content-Type"] = "text/css"
+    return response
 
 
 # For local testing only.

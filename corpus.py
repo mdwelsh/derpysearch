@@ -1,21 +1,26 @@
 import random
 
 import googlesearch
+import nltk
 import requests
 from bs4 import BeautifulSoup
 from google.cloud import datastore
 from typing import Dict, List
 
+# nltk.download('punkt')
+sent_tokenizer = nltk.data.load("tokenizers/punkt/english.pickle")
+
+
 
 class Corpus:
-    def __init__(self, dsclient: datastore.Client, searchterm: str):
+    def __init__(self, dsclient: datastore.Client, searchterm: str, seed: str):
         self._dsclient = dsclient
         self._searchterm = searchterm
+        self._random = random.Random(seed)
 
     def load(self):
         key = self._dsclient.key("Corpus", self._searchterm)
         dbentry = self._dsclient.get(key)
-        print(f"Got back dbentry: {dbentry}")
         if not dbentry:
             self.create()
             self.save()
@@ -53,6 +58,11 @@ class Corpus:
         # Make a corpus from the words.
         print(f"Building corpus from {len(rawtext.split())} words...")
         self._buildcorpus(rawtext.split())
+        # self._nltk_text = nltk.Text(rawtext.split())
+
+    #    def gentext_nltk(self, startword: str, maxlen: int) -> str:
+    #        generated = self._nltk_text.generate(length=maxlen)
+    #        return generated
 
     def gentext(self, startword: str, maxlen: int) -> str:
         retval = ""
@@ -68,14 +78,22 @@ class Corpus:
             if curword not in self._nextwordprobs:
                 return retval
 
-            r = random.random()
-            for nextword, prob in self._nextwordprobs[curword].items():
+            r = self._random.random()
+
+            problist = list(self._nextwordprobs[curword].items())
+            # Sort by probability, decreasing, to make lookup deterministic.
+            problist.sort(key=lambda v: v[0], reverse=True)
+            for nextword, prob in problist:
                 if r <= prob:
                     curword = nextword
                     break
                 r -= prob
             wordcount += 1
-        return retval
+
+        # Now, capitalize it properly.
+        sentences = sent_tokenizer.tokenize(retval)
+        sentences = " ".join([sent.capitalize() for sent in sentences])
+        return sentences
 
     def _buildcorpus(self, wordlist: List[str]):
         # This maps a previous word to the dictionary of counts of next words observed.
@@ -114,13 +132,12 @@ class Corpus:
         self._dsclient.put(insert_entity)
         print(f"Wrote entity to DB with key {key}")
 
-
-
     def update(self, dbentry):
         print(f"Updating from dbentry with search term: {dbentry['searchterm']}")
         self._nextwordprobs = dbentry["nextwordprobs"]
 
         import json
+
         with open("foo.json", "w") as fp:
             jval = json.dumps(self._nextwordprobs)
             fp.write(jval)
