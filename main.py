@@ -27,6 +27,9 @@ app = Flask(__name__)
 # Random word generator.
 randomword = words.words()
 
+# Number of web pages used to build each corpus.
+CORPUS_PAGES = 10
+
 
 @app.route("/favicon.png")
 def favicon():
@@ -70,7 +73,7 @@ def searchresults():
     searchterm = request.args.get("q", "")
     print(f"Search results term is: {searchterm}")
 
-    thecorpus = corpus.Corpus(dsclient, searchterm, seed=searchterm)
+    thecorpus = corpus.Corpus(dsclient, searchterm, seed=searchterm, max_results=CORPUS_PAGES)
     thecorpus.load()
 
     results = []
@@ -97,7 +100,7 @@ def searchresults():
 def resultpage():
     searchterm = request.args.get("q", "")
     result_index = request.args.get("index", "")
-    thecorpus = corpus.Corpus(dsclient, searchterm, seed=f"{searchterm}/{result_index}")
+    thecorpus = corpus.Corpus(dsclient, searchterm, seed=f"{searchterm}/{result_index}", max_results=CORPUS_PAGES)
     thecorpus.load()
 
     title=thecorpus.gentext(searchterm, 5)
